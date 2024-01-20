@@ -8,8 +8,12 @@
   "bugs": "https://github.com/aidlran/signals/issues",
   "homepage": "https://github.com/aidlran/signals#readme",
   "main": "./dist/signal/index.js",
+  "types": "./dist/signal/index.d.ts",
   "type": "module",
   "sideEffects": false,
+  "files": [
+    "./dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/signal/index.d.ts",
@@ -19,6 +23,7 @@
   "scripts": {
     "build": "rm -dr dist; tsc",
     "lint": "publint",
+    "prepack": "npm run build",
     "start": "tsc --watch --preserveWatchOutput"
   },
   "devDependencies": {
