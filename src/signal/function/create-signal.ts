@@ -1,5 +1,5 @@
-import { queueUniqueMicrotask } from '../../microtask/function/queue-unique-microtask';
-import type { Subscriber, WritableSignal } from '../types';
+import { queueUniqueMicrotask } from '../../microtask/function/queue-unique-microtask.js';
+import type { Subscriber, WritableSignal } from '../types.js';
 
 export const createSignal = <T>(initialValue: T): WritableSignal<T> => {
   let currentValue = initialValue;

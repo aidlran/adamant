@@ -1,7 +1,7 @@
-import { queueUniqueMicrotask } from '../../microtask/function/queue-unique-microtask';
-import type { ReadableSignal } from '../types';
-import { createSignal } from './create-signal';
-import { toReadOnlySignal } from './to-read-only-signal';
+import { queueUniqueMicrotask } from '../../microtask/function/queue-unique-microtask.js';
+import type { ReadableSignal } from '../types.js';
+import { createSignal } from './create-signal.js';
+import { toReadOnlySignal } from './to-read-only-signal.js';
 
 /**
  * Creates a derived signal, which is a special `ReadableSignal` where the value is automatically

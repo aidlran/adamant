@@ -1,0 +1,27 @@
+{
+  "name": "@adamantjs/signals",
+  "version": "0.1.0",
+  "description": "A lightweight reactive programming library.",
+  "license": "MIT",
+  "author": "Aidan Loughran",
+  "repository": "github:aidlran/signals",
+  "bugs": "https://github.com/aidlran/signals/issues",
+  "homepage": "https://github.com/aidlran/signals#readme",
+  "main": "./dist/signal/index.js",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/signal/index.d.ts",
+      "default": "./dist/signal/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -dr dist; tsc",
+    "start": "tsc --watch --preserveWatchOutput"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "typescript": "~5.3.3"
+  }
+}
