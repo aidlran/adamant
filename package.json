@@ -18,10 +18,12 @@
   },
   "scripts": {
     "build": "rm -dr dist; tsc",
+    "lint": "publint",
     "start": "tsc --watch --preserveWatchOutput"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
+    "publint": "^0.2.7",
     "typescript": "~5.3.3"
   }
 }
