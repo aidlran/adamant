@@ -2,7 +2,8 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./dist",
+    "module": "NodeNext",
+    "outDir": "./dist/mjs",
     "sourceMap": true,
     "strict": true,
   },

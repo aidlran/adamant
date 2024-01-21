@@ -7,8 +7,8 @@
   "repository": "github:aidlran/signals",
   "bugs": "https://github.com/aidlran/signals/issues",
   "homepage": "https://github.com/aidlran/signals#readme",
-  "main": "./dist/signal/index.js",
-  "types": "./dist/signal/index.d.ts",
+  "main": "./dist/cjs/signal/index.js",
+  "types": "./dist/cjs/signal/index.d.ts",
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -16,12 +16,19 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/signal/index.d.ts",
-      "default": "./dist/signal/index.js"
+      "import": {
+        "types": "./dist/mjs/signal/index.d.ts",
+        "default": "./dist/mjs/signal/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/signal/index.d.ts",
+        "default": "./dist/cjs/signal/index.js"
+      }
     }
   },
   "scripts": {
-    "build": "rm -dr dist; tsc",
+    "build": "rm -dr dist; tsc && npm run build:cjs",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "lint": "publint",
     "prepack": "npm run build",
     "start": "tsc --watch --preserveWatchOutput"
