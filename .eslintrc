@@ -1,0 +1,24 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    "plugin:prettier/recommended",
+  ],
+  "plugins": ["deprecation"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": true,
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+  },
+  "ignorePatterns": ["dist"],
+  "rules": {
+    "deprecation/deprecation": "warn",
+    "no-console": "error",
+    "no-debugger": "error",
+  },
+}
