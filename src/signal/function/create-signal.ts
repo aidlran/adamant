@@ -1,52 +1,46 @@
 import { queueUniqueMicrotask } from '../../microtask/function/queue-unique-microtask.js';
-import type { Subscriber, WritableSignal } from '../types.js';
+import type { Effect, Signal, Unsubscribable } from '../types.js';
 
-let effectListener: (() => void) | undefined;
-let effectUnsubscribeSet: Set<() => void> | undefined;
+let effectCallback: Effect | undefined;
+let effectUnsubscribeSet: Set<Effect> | undefined;
 
-export function createEffect(callback: () => void) {
-  effectListener = callback;
+export function createEffect(callback: Effect): Unsubscribable {
+  effectCallback = callback;
   effectUnsubscribeSet = new Set();
   callback();
-  const unsubscribe = function (this: Set<() => void>) {
+  const unsubscribe = function (this: Set<Effect>) {
     this.forEach((fn) => fn());
   }.bind(effectUnsubscribeSet);
-  effectListener = effectUnsubscribeSet = undefined;
+  effectCallback = effectUnsubscribeSet = undefined;
   return unsubscribe;
 }
 
-export function createSignal<T>(initialValue: T): WritableSignal<T> {
+export function createSignal<T>(initialValue: T): Signal<T> {
   let currentValue = initialValue;
-  const subscribers = new Set<Subscriber<T> | (() => void)>();
+  const subscribers = new Set<Effect>();
 
-  function unsubscribe(this: Subscriber<T> | (() => void)) {
+  function unsubscribe(this: Effect) {
     subscribers.delete(this);
   }
 
-  function signal() {
-    if (effectListener) {
-      subscribers.add(effectListener);
-      effectUnsubscribeSet!.add(unsubscribe.bind(effectListener));
+  function get() {
+    if (effectCallback) {
+      subscribers.add(effectCallback);
+      effectUnsubscribeSet!.add(unsubscribe.bind(effectCallback));
     }
     return currentValue;
   }
 
   function push() {
-    subscribers.forEach((subscriber) => subscriber(currentValue));
+    subscribers.forEach((fn) => fn());
   }
 
-  signal.set = (newValue: T) => {
+  function set(newValue: T) {
     currentValue = newValue;
     // TODO: to make even more efficient: notify computed stores first,
     // have them calculate, then notify all subscribers in one pass
     queueUniqueMicrotask(push);
-  };
+  }
 
-  signal.subscribe = (subscriber: Subscriber<T>) => {
-    subscribers.add(subscriber);
-    subscriber(currentValue);
-    return unsubscribe.bind(subscriber);
-  };
-
-  return signal;
+  return [get, set];
 }
