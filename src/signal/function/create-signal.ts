@@ -5,14 +5,19 @@ import type { Effect, Signal, Unsubscribable } from '../types.js';
 
 let microtaskQueued = false;
 const awaitingNotify = new Set<Set<Effect>>();
+const processed = new Set<Effect>();
 
 function notifySubscribers() {
   for (const set of awaitingNotify) {
     for (const effect of set) {
-      effect();
+      if (!processed.has(effect)) {
+        effect();
+        processed.add(effect);
+      }
     }
   }
   awaitingNotify.clear();
+  processed.clear();
   microtaskQueued = false;
 }
 
