@@ -33,6 +33,7 @@
   "scripts": {
     "build": "rm -dr dist; tsc && npm run build:cjs",
     "build:cjs": "tsc --module commonjs --downlevelIteration --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+    "cost": "bun build --minify src/signal/index.ts | gzip | wc -c",
     "format": "prettier --write .",
     "lint": "publint && eslint .",
     "prepack": "npm run build",
