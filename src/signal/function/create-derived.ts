@@ -7,8 +7,18 @@ import { createEffect, createSignal } from './create-signal.js';
 /**
  * Creates a signal where the value is automatically derived from other signal(s).
  *
- * @param callback A callback, called whenever the signal needs re-calculating, that returns the
- *   calculated value of the derived signal.
+ * @example
+ *
+ * ```js
+ * const [count] = createSignal(0);
+ *
+ * const doubled = createDerived(() => {
+ *   return count() * 2;
+ * });
+ * ```
+ *
+ * @param callback A callback that computes and returns the value of the derived signal.
+ * @returns A `SignalGetter` function.
  */
 export function createDerived<T>(callback: () => T): SignalGetter<T> {
   const [get, set] = createSignal(undefined as T);

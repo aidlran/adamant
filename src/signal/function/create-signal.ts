@@ -19,6 +19,25 @@ function notifySubscribers() {
 let effectCallback: Effect | undefined;
 let effectUnsubscribeSet: Set<Unsubscribable> | undefined;
 
+/**
+ * Creates a reactive callback. The callback is executed once immediately, then will continue to be
+ * re-executed whenever any of the signals it depends on change value. This will continue to happen
+ * until unsubscribed.
+ *
+ * @example
+ *
+ * ```js
+ * const [count] = createSignal(0);
+ *
+ * const unsubscribe = createEffect(() => {
+ *   console.log(count());
+ * });
+ * ```
+ *
+ * @param callback A callback. Using `SignalGetter` functions within the callback will mean the
+ *   corresponding signal becomes a dependency.
+ * @returns An unsubscribe function.
+ */
 export function createEffect(callback: Effect): Unsubscribable {
   effectCallback = callback;
   effectUnsubscribeSet = new Set();
@@ -30,6 +49,18 @@ export function createEffect(callback: Effect): Unsubscribable {
   return unsubscribe;
 }
 
+/**
+ * Creates a reactive signal and initialises it with a value.
+ *
+ * @example
+ *
+ * ```js
+ * const [count, setCount] = createSignal(0);
+ * ```
+ *
+ * @param initialValue An initial value for the signal.
+ * @returns A tuple consisting of a `SignalGetter` and a `SignalSetter`.
+ */
 export function createSignal<T>(initialValue: T): Signal<T> {
   let currentValue = initialValue;
   const subscribers = new Set<Effect>();
