@@ -129,7 +129,8 @@ setInterval(() => {
 }, 1000);
 ```
 
-If a signal changes its value and no one is around to hear it, does it make a sound? The answer is no! Derived signals will subscribe to their dependencies and re-calculate their value only if they themselves are actively subscribed to.
+<!-- TODO: this isn't implemented yet! -->
+<!-- If a signal changes its value and no one is around to hear it, does it make a sound? The answer is no! Derived signals will subscribe to their dependencies and re-calculate their value only if they themselves are actively subscribed to. -->
 
 You can use derived signals to create other derived signals, making them very flexible and powerful. You can create entire computed **signal chains** that propagate through only to where they are subscribed.
 
