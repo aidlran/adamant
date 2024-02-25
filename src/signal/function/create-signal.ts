@@ -4,6 +4,8 @@ import type { Effect, Signal, Unsubscribable } from '../types.js';
 // have them calculate, then notify all end subscribers in one pass
 
 let microtaskQueued = false;
+let tickPromise = Promise.resolve();
+let tickResolve: () => void;
 const awaitingNotify = new Set<Set<Effect>>();
 const processed = new Set<Effect>();
 
@@ -19,6 +21,7 @@ function notifySubscribers() {
   awaitingNotify.clear();
   processed.clear();
   microtaskQueued = false;
+  tickResolve();
 }
 
 let effectCallback: Effect | undefined;
@@ -88,8 +91,13 @@ export function createSignal<T>(initialValue: T): Signal<T> {
     if (!microtaskQueued) {
       queueMicrotask(notifySubscribers);
       microtaskQueued = true;
+      tickPromise = new Promise((resolve) => (tickResolve = resolve));
     }
   }
 
   return [get, set];
+}
+
+export function tick() {
+  return tickPromise;
 }
