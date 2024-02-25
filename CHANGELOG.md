@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 (2024-02-25)
+
+### Features
+
+- **signals:** add awaitable `tick` ([4e50ada](https://github.com/aidlran/signals/commit/4e50adace6469415a7a7f0f60989066dc3ceba87))
+
 ## 0.1.0 (2024-01-26)
 
 ### Features
