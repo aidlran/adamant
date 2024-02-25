@@ -2,7 +2,7 @@
 
 A lightweight and highly compatible implementation of the signals design pattern, which was popularised by [SolidJS](https://www.solidjs.com/tutorial/introduction_signals) and now appears in many frontend JavaScript frameworks.
 
-This implementation is designed to work in **any** runtime and ships with both CommonJS and ESM versions! Minified and gzipped, it comes to just ~325 bytes.
+This implementation is designed to work in **any** runtime and ships with both CommonJS and ESM versions! Minified and gzipped, it comes to <400 bytes.
 
 This library has been built to power [LibreBase](https://github.com/aidlran/librebase).
 
@@ -54,28 +54,6 @@ createEffect(() => {
 
 // increment the count every second
 setInterval(() => {
-  setCount(count() + 1);
-}, 1000);
-```
-
-#### Timing
-
-> [!IMPORTANT]
-> To optimise execution at runtime, listeners are not notified until the call stack is exhausted and signal values are settled. This makes signals great for creating fast and reactive user interfaces, but might not be suitable for all applications!
-
-```js
-import { createEffect, createSignal } from '@adamantjs/signals';
-
-const [count, setCount] = createSignal(1);
-
-createEffect(() => {
-  // whenever the value changes, log it
-  console.log(count());
-});
-
-setInterval(() => {
-  // this entire call stack will complete before the effect is called
-  setCount(count() + 1); // this value is not logged!
   setCount(count() + 1);
 }, 1000);
 ```
@@ -152,6 +130,47 @@ createEffect(() => {
 });
 
 setInterval(() => {
+  setCount(count() + 1);
+}, 1000);
+```
+
+### Timing and `tick`
+
+> [!IMPORTANT]
+> To maximize efficiency, effects and derived signals are not recalculated until the call stack completes.
+
+```js
+import { createEffect, createSignal } from '@adamantjs/signals';
+
+const [count, setCount] = createSignal(1);
+
+createEffect(() => {
+  // whenever the value changes, log it
+  console.log(count());
+});
+
+setInterval(() => {
+  // this entire call stack will complete before the effect is called
+  setCount(count() + 1); // this value is not logged!
+  setCount(count() + 1);
+}, 1000);
+```
+
+Sometimes you need a dependent effect or derived signal to recalculate before you can continue. You can use the `tick` function for this. `tick` will await any pending notifications:
+
+```js
+import { createEffect, createSignal, tick } from '@adamantjs/signals';
+
+const [count, setCount] = createSignal(1);
+
+createEffect(() => {
+  // whenever the value changes, log it
+  console.log(count());
+});
+
+setInterval(async () => {
+  setCount(count() + 1);
+  await tick(); // now the value is logged
   setCount(count() + 1);
 }, 1000);
 ```
