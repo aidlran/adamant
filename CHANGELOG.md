@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.2.0 (2024-03-03)
+
+### Breaking
+
+- **signals:** rename exported functions ([870cf4c](https://github.com/aidlran/signals/commit/870cf4ce45e51bd737d2cc3d1030a9862de51fb8))
+  - `createSignal` is now `signal`
+  - `createEffect` is now `effect`
+  - `createDerived` is now `derived`
+
+### Performance
+
+- **signals:** subscription optimisations for derived signals ([870cf4c](https://github.com/aidlran/signals/commit/870cf4ce45e51bd737d2cc3d1030a9862de51fb8))
+
+### Tests
+
+- **signals:** added a test suite ([870cf4c](https://github.com/aidlran/signals/commit/870cf4ce45e51bd737d2cc3d1030a9862de51fb8))
+
 ## 0.1.1 (2024-02-25)
 
 ### Features
