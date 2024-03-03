@@ -4,21 +4,27 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
-    "plugin:prettier/recommended",
+    "plugin:prettier/recommended"
   ],
-  "plugins": ["deprecation"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": true,
+    "project": true
   },
   "env": {
     "browser": true,
-    "node": true,
+    "node": true
   },
   "ignorePatterns": ["dist"],
   "rules": {
-    "deprecation/deprecation": "warn",
     "no-console": "error",
-    "no-debugger": "error",
+    "no-debugger": "error"
   },
+  "overrides": [
+    {
+      "files": ["*.test.js"],
+      "rules": {
+        "@typescript-eslint/no-floating-promises": "off"
+      }
+    }
+  ]
 }

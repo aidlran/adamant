@@ -1,21 +1,19 @@
 # [@adamantjs/signals](https://github.com/aidlran/adamant)
 
-A lightweight and highly compatible implementation of the signals design pattern, which was popularised by [SolidJS](https://www.solidjs.com/tutorial/introduction_signals) and now appears in many frontend JavaScript frameworks.
+A lightweight reactive programming library based on the signals design pattern which has been popularised by many modern frontend JavaScript frameworks.
 
-This implementation is designed to work in **any** runtime and ships with both CommonJS and ESM versions! Minified and gzipped, it comes to <400 bytes.
-
-This library has been built to power [LibreBase](https://github.com/aidlran/librebase).
+This implementation ships with both CommonJS and ESM versions and is intended to work in any runtime. The module is is tree-shakable, however using all functions should cost less than 500 bytes in a minified and gzipped bundle.
 
 ## Usage
 
-### `createSignal`
+### `signal`
 
 Creates a signal and assigns it an initial value. Returns a tuple consisting of a **getter** and a **setter** which you can name anything you like:
 
 ```js
-import { createSignal } from '@adamantjs/signals';
+import { signal } from '@adamantjs/signals';
 
-const [count, setCount] = createSignal(1);
+const [count, setCount] = signal(1);
 
 console.log(count()); // logged: 1
 
@@ -31,23 +29,23 @@ console.log(count()); // logged: 4
 A signal can be of any type. If you use TypeScript, you can specify a type `T` like so:
 
 ```ts
-import { createSignal } from '@adamantjs/signals';
+import { signal } from '@adamantjs/signals';
 
 type Fruit = 'Apple' | 'Banana' | 'Orange';
 
-const [fruit, setFruit] = createSignal<Fruit>('Apple');
+const [fruit, setFruit] = signal<Fruit>('Apple');
 ```
 
-### `createEffect`
+### `effect`
 
-This is where it gets interesting. `createEffect` creates a **reactive callback**. The callback is executed once immediately. From that point onwards it will be executed again when a value of any of the signals it depends on changes.
+This is where it gets interesting. `effect` creates a **reactive callback**. The callback is executed once immediately. From that point onwards it will be executed again when a value of any of the signals it depends on changes.
 
 ```js
-import { createEffect, createSignal } from '@adamantjs/signals';
+import { effect, signal } from '@adamantjs/signals';
 
-const [count, setCount] = createSignal(1);
+const [count, setCount] = signal(1);
 
-createEffect(() => {
+effect(() => {
   // whenever the value changes, log it
   console.log(count());
 });
@@ -60,14 +58,14 @@ setInterval(() => {
 
 #### Unsubscribing
 
-Our effect will continue to be called **forever**. We need to manually unsubscribe when our effect is no longer needed. The `createEffect` function returns an unsubscribe function we can use. For instance, you might call this in a component's lifecycle "destroy" or "unmount" hook.
+Our effect will continue to be called **forever**. We need to manually unsubscribe when our effect is no longer needed. The `effect` function returns an unsubscribe function we can use. For instance, you might call this in a component's lifecycle "destroy" or "unmount" hook.
 
 ```js
-import { createEffect, createSignal } from '@adamantjs/signals';
+import { effect, signal } from '@adamantjs/signals';
 
-const [count, setCount] = createSignal(1);
+const [count, setCount] = signal(1);
 
-const unsubscribe = createEffect(() => {
+const unsubscribe = effect(() => {
   // whenever the count has changed, log it
   console.log(count());
 });
@@ -83,20 +81,20 @@ setTimeout(() => {
 }, 5000);
 ```
 
-### `createDerived`
+### `derived`
 
-This lets you create a special signal of which the value is derived from other signals. `createDerived` takes a callback, similar to `createEffect`, however it expects a return value.
+This lets you create a special signal of which the value is derived from other signals. `derived` takes a callback, similar to `effect`, however it expects a return value.
 
 ```js
-import { createDerived, createEffect, createSignal } from '@adamantjs/signals';
+import { derived, effect, signal } from '@adamantjs/signals';
 
-const [count, setCount] = createSignal(1);
+const [count, setCount] = signal(1);
 
-const doubled = createDerived(() => {
+const doubled = derived(() => {
   return count() * 2;
 });
 
-createEffect(() => {
+effect(() => {
   // whenever the derived value has changed, log it
   console.log(doubled());
 });
@@ -107,25 +105,24 @@ setInterval(() => {
 }, 1000);
 ```
 
-<!-- TODO: this isn't implemented yet! -->
-<!-- If a signal changes its value and no one is around to hear it, does it make a sound? The answer is no! Derived signals will subscribe to their dependencies and re-calculate their value only if they themselves are actively subscribed to. -->
+If a signal changes its value and no one is around to hear it, does it make a sound? The answer is no! Derived signals will subscribe to their dependencies and re-calculate their value only if they themselves are actively subscribed to.
 
-You can use derived signals to create other derived signals, making them very flexible and powerful. You can create entire computed **signal chains** that propagate through only to where they are subscribed.
+You can use derived signals to create other derived signals, making them very flexible and powerful. You can create entire computed **signal chains** where values and computations propagate only to where they are subscribed.
 
 ```js
-import { createDerived, createEffect, createSignal } from '@adamantjs/signals';
+import { derived, effect, signal } from '@adamantjs/signals';
 
-const [count, setCount] = createSignal(1);
+const [count, setCount] = signal(1);
 
-const doubled = createDerived(() => {
+const doubled = derived(() => {
   return count() * 2;
 });
 
-const quadrupled = createDerived(() => {
+const quadrupled = derived(() => {
   return doubled() * 2;
 });
 
-createEffect(() => {
+effect(() => {
   console.log(quadrupled());
 });
 
@@ -140,11 +137,11 @@ setInterval(() => {
 > To maximize efficiency, effects and derived signals are not recalculated until the call stack completes.
 
 ```js
-import { createEffect, createSignal } from '@adamantjs/signals';
+import { effect, signal } from '@adamantjs/signals';
 
-const [count, setCount] = createSignal(1);
+const [count, setCount] = signal(1);
 
-createEffect(() => {
+effect(() => {
   // whenever the value changes, log it
   console.log(count());
 });
@@ -159,11 +156,11 @@ setInterval(() => {
 Sometimes you need a dependent effect or derived signal to recalculate before you can continue. You can use the `tick` function for this. `tick` will await any pending notifications:
 
 ```js
-import { createEffect, createSignal, tick } from '@adamantjs/signals';
+import { effect, signal, tick } from '@adamantjs/signals';
 
-const [count, setCount] = createSignal(1);
+const [count, setCount] = signal(1);
 
-createEffect(() => {
+effect(() => {
   // whenever the value changes, log it
   console.log(count());
 });
@@ -181,9 +178,9 @@ Svelte users with a matching `svelte` peer dependency may use the specialised ex
 
 ```svelte
 <script>
-  import { createSignal, signaltoStore } from '@adamantjs/signals/svelte';
+  import { signal, signaltoStore } from '@adamantjs/signals/svelte';
 
-  const [countSignal, setCount] = createSignal(0);
+  const [countSignal, setCount] = signal(0);
 
   const count = signalToStore(countSignal);
 </script>

@@ -6,5 +6,6 @@
     "outDir": "./dist/mjs",
     "sourceMap": true,
     "strict": true
-  }
+  },
+  "exclude": ["*.test.js"]
 }
