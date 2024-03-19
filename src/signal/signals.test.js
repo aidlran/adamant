@@ -65,6 +65,42 @@ describe('signal', () => {
       check(1, 1);
     });
   });
+
+  test('notifies on array update', async () => {
+    const [get, set] = signal([]);
+    let expect = 0;
+    const unsubscribe = effect(() => {
+      strictEqual(expect, get().length);
+    });
+    expect++;
+    set(
+      (() => {
+        const a = get();
+        a.push({});
+        return a;
+      })(),
+    );
+    await tick();
+    unsubscribe();
+  });
+
+  test('notifies on object update', async () => {
+    const [get, set] = signal({});
+    let expect = 0;
+    const unsubscribe = effect(() => {
+      strictEqual(expect, Object.keys(get()).length);
+    });
+    expect++;
+    set(
+      (() => {
+        const a = get();
+        a.a = '';
+        return a;
+      })(),
+    );
+    await tick();
+    unsubscribe();
+  });
 });
 
 test('effect', async () => {
