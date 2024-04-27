@@ -2,18 +2,13 @@
   "name": "@adamantjs/signals",
   "version": "0.2.0",
   "description": "A lightweight reactive programming library.",
+  "homepage": "https://github.com/aidlran/signals#readme",
+  "bugs": "https://github.com/aidlran/signals/issues",
+  "repository": "github:aidlran/signals",
   "license": "MIT",
   "author": "Aidan Loughran",
-  "repository": "github:aidlran/signals",
-  "bugs": "https://github.com/aidlran/signals/issues",
-  "homepage": "https://github.com/aidlran/signals#readme",
-  "main": "./dist/cjs/index.js",
-  "types": "./dist/cjs/index.d.ts",
-  "type": "module",
   "sideEffects": false,
-  "files": [
-    "./dist"
-  ],
+  "type": "module",
   "exports": {
     ".": {
       "import": {
@@ -30,16 +25,35 @@
       "default": "./dist/mjs/svelte.js"
     }
   },
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "files": [
+    "./dist"
+  ],
   "scripts": {
     "build": "rm -dr dist; tsc && npm run build:cjs",
     "build:cjs": "tsc --module commonjs --downlevelIteration --outDir dist/cjs && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "ci": "npm run build && npm run lint && npm run test",
     "cost": "bun build --minify src/signal/index.ts | gzip | wc -c",
-    "format": "prettier --write .",
-    "lint": "publint && eslint .",
+    "format": "prettier --write . && sort-package-json",
+    "lint": "publint && sort-package-json --check && eslint .",
     "prepack": "npm run build",
     "start": "tsc --watch --preserveWatchOutput",
     "test": "node src/signal/signals.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.5",
+    "prettier-plugin-jsdoc": "^1.3.0",
+    "publint": "^0.2.7",
+    "sort-package-json": "^2.10.0",
+    "svelte": "^4.2.15",
+    "typescript": "~5.4.5"
   },
   "peerDependencies": {
     "svelte": ">=3.44.2 <6.0.0"
@@ -48,18 +62,5 @@
     "svelte": {
       "optional": true
     }
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.24",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.1.3",
-    "prettier": "^3.2.5",
-    "prettier-plugin-jsdoc": "^1.3.0",
-    "publint": "^0.2.7",
-    "svelte": "^4.2.12",
-    "typescript": "~5.3.3"
   }
 }
